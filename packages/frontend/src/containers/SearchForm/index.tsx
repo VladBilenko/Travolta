@@ -2,11 +2,20 @@ import {Autocomplete, Button, TextField} from "@mui/material";
 import {LocalizationProvider} from "@mui/x-date-pickers-pro";
 import {AdapterDateFns} from "@mui/x-date-pickers-pro/AdapterDateFns";
 import {DateRange, DateRangePicker} from "@mui/x-date-pickers-pro/DateRangePicker";
-import {useState} from "react";
+import {ChangeEvent, useCallback, useState} from "react";
 import './index.scss';
 
 const SearchForm = () => {
-    const [value, setValue] = useState<DateRange<Date>>([null, null]);
+    const [dateValue, setDateValue] = useState<DateRange<Date>>([null, null]);
+    const [guestsNumber, setGuestsNumber] = useState<number>(0);
+
+    const handleDateChange = useCallback((newValue: DateRange<Date>) => {
+        setDateValue(newValue);
+    }, []);
+
+    const handleGuestsNumberChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+        setGuestsNumber(parseInt(event.target.value));
+    }, [])
 
     return <div className="form">
         <div className="search">
@@ -25,10 +34,8 @@ const SearchForm = () => {
         >
             <DateRangePicker
                 className="picker"
-                value={value}
-                onChange={(newValue) => {
-                    setValue(newValue);
-                }}
+                value={dateValue}
+                onChange={handleDateChange}
                 renderInput={(startProps, endProps) => (
                     <>
                         <TextField sx={{marginRight: '20px'}} {...startProps} />
@@ -37,8 +44,8 @@ const SearchForm = () => {
                 )}
             />
         </LocalizationProvider>
-        <TextField sx={{marginRight: '20px'}} type="number" label="Number of guests" />
-        <Button variant="contained" size="large" sx={{height: '55px', width: '200px'}}>Search</Button>
+        <TextField value={guestsNumber} onChange={handleGuestsNumberChange} sx={{marginRight: '20px'}} type="number" label="Number of guests" />
+        <Button variant="contained" size="large" sx={{height: '55px', width: '200px'}} color="secondary">Search</Button>
     </div>
 }
 
