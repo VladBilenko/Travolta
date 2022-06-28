@@ -75,7 +75,7 @@ export const useFormSubmit = ({dateValue, guestsNumber, searchValue}: any) => {
         }
         const urlStringParams = Object.keys(queryParams).map(key => key + '=' + queryParams[key]).join('&');
 
-        navigate(`searched-results?${urlStringParams}`);
+        navigate(`/searched-results?${urlStringParams}`);
     }
 
     return {

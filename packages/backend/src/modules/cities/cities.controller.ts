@@ -3,10 +3,10 @@ import { CitiesService } from './cities.service';
 
 @Controller('cities')
 export class CitiesController {
-  constructor(private readonly appService: CitiesService) {}
+  constructor(private readonly citiesService: CitiesService) {}
 
   @Get()
   getCities(@Query() query): any[] {
-    return this.appService.getCities(query.searchString);
+    return this.citiesService.getCities(query.searchString);
   }
 }

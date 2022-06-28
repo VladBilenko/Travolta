@@ -18,4 +18,8 @@ export class CitiesService {
 
     return result;
   }
+
+  getCityById(id: string) {
+    return cities.filter(({cityId}) => cityId === parseInt(id)).pop();
+  }
 }
