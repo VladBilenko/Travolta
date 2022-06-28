@@ -1,31 +1,27 @@
-import {Autocomplete, Button, TextField} from "@mui/material";
-import {LocalizationProvider} from "@mui/x-date-pickers-pro";
-import {AdapterDateFns} from "@mui/x-date-pickers-pro/AdapterDateFns";
-import {DateRange, DateRangePicker} from "@mui/x-date-pickers-pro/DateRangePicker";
-import {ChangeEvent, useCallback, useState} from "react";
+import { Button, TextField } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers-pro";
+import { AdapterDateFns } from "@mui/x-date-pickers-pro/AdapterDateFns";
+import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import AsynchronousAutocomplete from "../../components/AsynchronousAutocomplete";
+import {useDate, useFormSubmit, useGuestsNumber, useSearch} from "./hooks";
+
 import './index.scss';
 
 const SearchForm = () => {
-    const [dateValue, setDateValue] = useState<DateRange<Date>>([null, null]);
-    const [guestsNumber, setGuestsNumber] = useState<number>(0);
-
-    const handleDateChange = useCallback((newValue: DateRange<Date>) => {
-        setDateValue(newValue);
-    }, []);
-
-    const handleGuestsNumberChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
-        setGuestsNumber(parseInt(event.target.value));
-    }, [])
+    const { searchString, searchValue, searchOptions, loading, handleSearchChange, handleSearchValueChange } = useSearch();
+    const { dateValue, handleDateChange } = useDate();
+    const { guestsNumber, handleGuestsNumberChange } = useGuestsNumber();
+    const { isValid, handleSubmit } = useFormSubmit({dateValue, guestsNumber, searchValue});
 
     return <div className="form">
         <div className="search">
-            <Autocomplete
-                disablePortal
-                id="combo-box-demo"
-                options={[]}
-                sx={{ width: 300 }}
-                renderInput={(params) =>
-                    <TextField {...params} label="What is your destination" />}
+            <AsynchronousAutocomplete
+                searchString={searchString}
+                searchValue={searchValue}
+                searchOptions={searchOptions}
+                loading={loading}
+                handleSearchChange={handleSearchChange}
+                handleSearchValueChange={handleSearchValueChange}
             />
         </div>
         <LocalizationProvider
@@ -45,7 +41,7 @@ const SearchForm = () => {
             />
         </LocalizationProvider>
         <TextField value={guestsNumber} onChange={handleGuestsNumberChange} sx={{marginRight: '20px'}} type="number" label="Number of guests" />
-        <Button variant="contained" size="large" sx={{height: '55px', width: '200px'}} color="secondary">Search</Button>
+        <Button disabled={!isValid} onClick={handleSubmit} variant="contained" size="large" sx={{height: '55px', width: '200px'}} color="secondary">Search</Button>
     </div>
 }
 
