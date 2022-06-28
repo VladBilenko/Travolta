@@ -13,7 +13,13 @@ export class HotelsService {
         const city = this.citiesService.getCityById(selectedCity);
         const hotelsInCity = this.getHotelsForCity(city.cityId);
 
-        return this.getAvailableHotels(hotelsInCity, dateValue, guestsNumber).map(hotel => ({...hotel, city: city.name, country: city.country}))
+        return this.getAvailableHotels(hotelsInCity, dateValue, guestsNumber)
+            .map(hotel => ({
+                ...hotel,
+                city: city.name,
+                country: city.country,
+                totalPrice: this.getRequestedDaysInHotel(dateValue) * hotel.price,
+            }));
     }
 
     private getHotelsForCity(id: number) {
@@ -41,5 +47,11 @@ export class HotelsService {
 
             return bookings.every(({guestsCount}) => (maxGuestsAmount - guestsCount) >= guestsNumber);
         })
+    }
+
+    private getRequestedDaysInHotel(dateValue): number {
+        const [desiredCheckIn, desiredCheckOut] = dateValue.split(',').map(Number);
+
+        return Math.ceil((desiredCheckOut - desiredCheckIn) / (1000 * 60 * 60 * 24));
     }
 }

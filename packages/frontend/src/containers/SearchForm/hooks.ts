@@ -1,10 +1,9 @@
 import {ChangeEvent, useCallback, useEffect, useState} from "react";
 import {DateRange} from "@mui/x-date-pickers-pro/DateRangePicker";
-import { useNavigate } from "react-router-dom";
 
-export const useSearch = () => {
+export const useSearch = (initialValue?: any) => {
     const [searchString, setSearchString] = useState('');
-    const [searchValue, setSearchValue] = useState(null);
+    const [searchValue, setSearchValue] = useState(initialValue);
     const [searchOptions, setSearchOptions] = useState([]);
     const [loading, setLoading] = useState(false);
 
@@ -37,8 +36,8 @@ export const useSearch = () => {
     }
 }
 
-export const useDate = () => {
-    const [dateValue, setDateValue] = useState<DateRange<Date>>([null, null]);
+export const useDate = (initialValue = [null, null] as DateRange<Date>) => {
+    const [dateValue, setDateValue] = useState<DateRange<Date>>(initialValue);
 
     const handleDateChange = useCallback((newValue: DateRange<Date>) => {
         setDateValue(newValue);
@@ -50,8 +49,8 @@ export const useDate = () => {
     }
 }
 
-export const useGuestsNumber = () => {
-    const [guestsNumber, setGuestsNumber] = useState<number>(0);
+export const useGuestsNumber = (initialValue = 0) => {
+    const [guestsNumber, setGuestsNumber] = useState<number>(initialValue);
 
     const handleGuestsNumberChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
         setGuestsNumber(parseInt(event.target.value));
@@ -63,19 +62,15 @@ export const useGuestsNumber = () => {
     }
 }
 
-export const useFormSubmit = ({dateValue, guestsNumber, searchValue}: any) => {
-    const navigate = useNavigate();
+export const useFormSubmit = ({ dateValue, guestsNumber, searchValue, onSubmit }: any) => {
     const isValid = Boolean(dateValue[0] && dateValue[1] && guestsNumber && searchValue);
 
     const handleSubmit = () => {
-        const queryParams: any = {
+        onSubmit({
             dateValue: [dateValue[0].getTime(), dateValue[1].getTime()],
             guestsNumber,
             selectedCity: searchValue.cityId,
-        }
-        const urlStringParams = Object.keys(queryParams).map(key => key + '=' + queryParams[key]).join('&');
-
-        navigate(`/searched-results?${urlStringParams}`);
+        });
     }
 
     return {

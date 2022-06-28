@@ -1,17 +1,24 @@
 import { Button, TextField } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers-pro";
 import { AdapterDateFns } from "@mui/x-date-pickers-pro/AdapterDateFns";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
+import {DateRange, DateRangePicker} from "@mui/x-date-pickers-pro/DateRangePicker";
 import AsynchronousAutocomplete from "../../components/AsynchronousAutocomplete";
 import {useDate, useFormSubmit, useGuestsNumber, useSearch} from "./hooks";
 
 import './index.scss';
 
-const SearchForm = () => {
-    const { searchString, searchValue, searchOptions, loading, handleSearchChange, handleSearchValueChange } = useSearch();
-    const { dateValue, handleDateChange } = useDate();
-    const { guestsNumber, handleGuestsNumberChange } = useGuestsNumber();
-    const { isValid, handleSubmit } = useFormSubmit({dateValue, guestsNumber, searchValue});
+interface SearchFormProps {
+    initialSearchValue?: any;
+    initialDateValue?: DateRange<Date>;
+    initialGuestsNumber?: number;
+    onSubmit: (data: any) => void;
+}
+
+const SearchForm = ({initialDateValue, initialGuestsNumber, initialSearchValue, onSubmit}: SearchFormProps) => {
+    const { searchString, searchValue, searchOptions, loading, handleSearchChange, handleSearchValueChange } = useSearch(initialSearchValue);
+    const { dateValue, handleDateChange } = useDate(initialDateValue);
+    const { guestsNumber, handleGuestsNumberChange } = useGuestsNumber(initialGuestsNumber);
+    const { isValid, handleSubmit } = useFormSubmit({dateValue, guestsNumber, searchValue, onSubmit});
 
     return <div className="form">
         <div className="search">

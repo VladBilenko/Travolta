@@ -1,4 +1,4 @@
-import {Controller, Get, Query} from '@nestjs/common';
+import {Controller, Get, Param, Query} from '@nestjs/common';
 import { CitiesService } from './cities.service';
 
 @Controller('cities')
@@ -8,5 +8,10 @@ export class CitiesController {
   @Get()
   getCities(@Query() query): any[] {
     return this.citiesService.getCities(query.searchString);
+  }
+
+  @Get(':id')
+  getCityById(@Param('id') id: string) {
+    return this.citiesService.getCityById(id);
   }
 }
