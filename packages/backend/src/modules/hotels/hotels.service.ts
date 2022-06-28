@@ -13,7 +13,7 @@ export class HotelsService {
         const city = this.citiesService.getCityById(selectedCity);
         const hotelsInCity = this.getHotelsForCity(city.cityId);
 
-        return this.getAvailableHotels(hotelsInCity, dateValue, guestsNumber)
+        return this.getAvailableHotels(hotelsInCity, dateValue, guestsNumber).map(hotel => ({...hotel, city: city.name, country: city.country}))
     }
 
     private getHotelsForCity(id: number) {
